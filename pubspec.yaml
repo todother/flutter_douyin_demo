@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   marquee: 
   video_player: 
+  marquee_flutter:
 
 dev_dependencies:
   flutter_test:

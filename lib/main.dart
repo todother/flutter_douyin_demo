@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:marquee_flutter/marquee_flutter.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -15,21 +16,23 @@ class MyApp extends StatelessWidget {
       title: "某音",
       home: Scaffold(
         body: Container(
-          decoration: BoxDecoration(color: Colors.grey[500]),
-          child: Stack(
-            children: [
-              VideoBack(),
-              Home(),
-            ]
-          ),
+          decoration: BoxDecoration(color: Colors.black),
+          child: Stack(children: [
+            VideoBack(),
+            Home(),
+          ]),
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            height: 60,
+        bottomNavigationBar: Container(
             decoration: BoxDecoration(color: Colors.black),
-            child: BtmBar(),
-          ),
-        ),
+            child: SafeArea(
+                child: BottomAppBar(
+              child: Container(
+                decoration: BoxDecoration(color: Colors.black),
+                height: 60,
+                // decoration: BoxDecoration(color: Colors.black),
+                child: BtmBar(),
+              ),
+            ))),
       ),
     );
   }
@@ -43,35 +46,40 @@ class VideoBack extends StatefulWidget {
 
 class _VideoBackState extends State<VideoBack> {
   VideoPlayerController _controller;
-    bool _isPlaying = false;
-    String url = "https://www.guojio.com/video/07a7faa1-3696-4af7-aeac-2d6cf6bf25f9.mp4";
+  bool _isPlaying = false;
+  String url =
+      "https://www.guojio.com/video/07a7faa1-3696-4af7-aeac-2d6cf6bf25f9.mp4";
 
-    @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-        _controller = VideoPlayerController.network(this.url)
-        // 播放状态
-        ..addListener(() {
-            final bool isPlaying = _controller.value.isPlaying;
-            if (isPlaying != _isPlaying) {
-                setState(() { _isPlaying = isPlaying; });
-            }
-        })
-        // 在初始化完成后必须更新界面
-        ..initialize().then((_) {
-            setState(() {});
-        });
+    _controller = VideoPlayerController.network(this.url)
+      // 播放状态
+      ..addListener(() {
+        final bool isPlaying = _controller.value.isPlaying;
+        if (isPlaying != _isPlaying) {
+          setState(() {
+            _isPlaying = isPlaying;
+          });
+        }
+      })
+      // 在初始化完成后必须更新界面
+      ..initialize().then((_) {
+        setState(() {});
+      });
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-       child:  _controller.value.initialized
-                    // 加载成功
-                    ? new AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                    ) : new Container(),
+      child: _controller.value.initialized
+          // 加载成功
+          ? new AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            )
+          : new Container(),
     );
   }
 }
@@ -86,12 +94,13 @@ class Home extends StatelessWidget {
     return Stack(children: [
       Positioned(
         top: 0,
-        height: 120,
+        // height: 120,
         width: screenWidth,
-        child: Container(
+        child: SafeArea(
+            child: Container(
           // decoration: BoxDecoration(color: Colors.pinkAccent),
           child: TopTab(),
-        ),
+        )),
       ),
       Positioned(
         bottom: 0,
@@ -104,19 +113,19 @@ class Home extends StatelessWidget {
       ),
       Positioned(
         right: 0,
-        width: 0.25 * screenWidth,
-        height: 0.4 * screenHeight,
-        top: 0.32 * screenHeight,
+        width: 0.2 * screenWidth,
+        height: 0.37 * screenHeight,
+        top: 0.4 * screenHeight,
         child: Container(
           // decoration: BoxDecoration(color: Colors.orangeAccent),
           child: getButtonList(),
         ),
       ),
       Positioned(
-        bottom: 20,
+        bottom: 10,
         right: 0,
-        width: 0.25 * screenWidth,
-        height: 0.25 * screenWidth,
+        width: 0.2 * screenWidth,
+        height: 0.2 * screenWidth,
         child: Container(
           width: 20,
           height: 20,
@@ -148,43 +157,37 @@ class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Expanded(
-          flex: 2,
-          child: Icon(
-            Icons.search,
-            size: 30,
-            color: Colors.white,
-          ),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          width: 10,
         ),
-        Expanded(
-          flex: 8,
-          child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 50),
-              width: 240,
-              child: TabBar(
-                indicatorColor: Colors.white,
-                labelStyle: TextStyle(color: Colors.white, fontSize: 25),
-                indicatorPadding: EdgeInsets.symmetric(horizontal: 25),
-                unselectedLabelStyle:
-                    TextStyle(color: Colors.grey[700], fontSize: 20),
-                controller: _controller,
-                tabs: <Widget>[Text("关注"), Text("推荐")],
-              )),
+        Icon(
+          Icons.search,
+          size: 30,
+          color: Colors.white,
         ),
-        Flexible(
-          flex: 2,
-          child: Row(children: [
-            SizedBox(
-              width: 20,
-            ),
-            Icon(
-              Icons.live_tv,
-              size: 30,
-              color: Colors.white,
-            ),
-          ]),
-        )
+        Container(
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                width: 280,
+                child: TabBar(
+                  indicatorColor: Colors.white,
+                  labelStyle: TextStyle(color: Colors.white, fontSize: 20),
+                  indicatorPadding: EdgeInsets.symmetric(horizontal: 30),
+                  unselectedLabelStyle:
+                      TextStyle(color: Colors.grey[700], fontSize: 18),
+                  controller: _controller,
+                  tabs: <Widget>[Text("关注"), Text("推荐")],
+                ))),
+        Icon(
+          Icons.live_tv,
+          size: 30,
+          color: Colors.white,
+        ),
+        SizedBox(
+          width: 10,
+        ),
       ],
     );
   }
@@ -213,8 +216,8 @@ class BtmBar extends StatelessWidget {
 getBtmTextWidget(String content, bool ifSelected) {
   return Text("$content",
       style: ifSelected
-          ? TextStyle(fontSize: 18, color: Colors.white)
-          : TextStyle(fontSize: 18, color: Colors.grey[600]));
+          ? TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold)
+          : TextStyle(fontSize: 16, color: Colors.grey[600],fontWeight: FontWeight.bold));
 }
 
 class AddIcon extends StatelessWidget {
@@ -222,23 +225,26 @@ class AddIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double iconHeight=30;
+    double totalWidth=50;
+    double eachSide=3;
     return Container(
       // decoration: BoxDecoration(),
-      height: 35,
-      width: 60,
+      height: iconHeight,
+      width: 50,
       child: Stack(
         children: <Widget>[
           Positioned(
-            height: 35,
-            width: 50,
+            height: iconHeight,
+            width: totalWidth-eachSide,
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.cyan, borderRadius: BorderRadius.circular(10)),
             ),
           ),
           Positioned(
-            height: 35,
-            width: 50,
+            height: iconHeight,
+            width: totalWidth-eachSide,
             right: 0,
             child: Container(
               decoration: BoxDecoration(
@@ -247,9 +253,9 @@ class AddIcon extends StatelessWidget {
             ),
           ),
           Positioned(
-            height: 35,
-            width: 50,
-            right: 5,
+            height: iconHeight,
+            width: totalWidth-eachSide*2,
+            right: eachSide,
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(10)),
@@ -272,30 +278,47 @@ class BtnContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            title: Text("@人民日报",style: TextStyle(color: Colors.white),),
-            subtitle: Text("奥斯卡答复哈士大夫哈师大发输电和健康阿萨德鸿福路口氨基酸的鸿福路口啊,奥斯卡答复哈士大夫哈师大发输电和健康阿萨德鸿福路口氨基酸的鸿福路口啊",style: TextStyle(color: Colors.white,),maxLines: 3,overflow: TextOverflow.ellipsis,),
+            title: Text(
+              "@人民日报",
+              style: TextStyle(color: Colors.white,fontSize: 16),
+            ),
+            subtitle: Text(
+              "奥斯卡答复哈士大夫哈师大发输电和健康阿萨德鸿福路口氨基酸的鸿福路口啊,奥斯卡答复哈士大夫哈师大发输电和健康阿萨德鸿福路口氨基酸的鸿福路口啊",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16
+              ),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           Row(
             children: <Widget>[
-              SizedBox(width: 10,),
-              Icon(Icons.music_note),
+              SizedBox(
+                width: 10,
+              ),
+              Icon(Icons.music_note,color: Colors.white,),
               // Marquee(text: "",),
-              // Flexible(
-              //   child: Marquee(
-              //     text: '人民日报创作的一些比较',
-              //     style: TextStyle(fontWeight: FontWeight.bold),
-              //     scrollAxis: Axis.horizontal,
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     blankSpace: 20.0,
-              //     velocity: 100.0,
-              //     pauseAfterRound: Duration(seconds: 1),
-              //     startPadding: 10.0,
-              //     accelerationDuration: Duration(seconds: 1),
-              //     accelerationCurve: Curves.linear,
-              //     decelerationDuration: Duration(milliseconds: 500),
-              //     decelerationCurve: Curves.easeOut,
-              //   )
-              // )
+              
+                Container(
+                  width: 200,
+                  height: 20,
+                  child: MarqueeWidget(
+                    text: '人民日报创作的一些比较有意思的东西',
+                    textStyle: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16),
+                    // scrollAxis: Axis.horizontal,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    // blankSpace: 20.0,
+                    // velocity: 100.0,
+                    // pauseAfterRound: Duration(seconds: 1),
+                    // startPadding: 10.0,
+                    // accelerationDuration: Duration(seconds: 1),
+                    // accelerationCurve: Curves.linear,
+                    // decelerationDuration: Duration(milliseconds: 500),
+                    // decelerationCurve: Curves.easeOut,
+                  )
+                )
+              
             ],
           )
         ],
@@ -327,8 +350,10 @@ class _RotateAlbumState extends State<RotateAlbum>
           }
         }),
       child: Container(
-        child: CircleAvatar(backgroundImage: NetworkImage("https://gss1.bdstatic.com/9vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D500/sign=dde475320ee9390152028d3e4bec54f9/d009b3de9c82d1586d8294a38f0a19d8bc3e42a4.jpg"),)
-      ),
+          child: CircleAvatar(
+        backgroundImage: NetworkImage(
+            "https://gss1.bdstatic.com/9vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D500/sign=dde475320ee9390152028d3e4bec54f9/d009b3de9c82d1586d8294a38f0a19d8bc3e42a4.jpg"),
+      )),
     );
     _controller.forward(from: 0.0);
   }
@@ -336,15 +361,16 @@ class _RotateAlbumState extends State<RotateAlbum>
   @override
   Widget build(BuildContext context) {
     return Container(
-
-        padding: EdgeInsets.all(15),
+      padding: EdgeInsets.all(18),
       child: animation,
     );
   }
 }
 
 getButtonList() {
+  double iconSize=40;
   return Column(
+
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: <Widget>[
       Container(
@@ -365,7 +391,9 @@ getButtonList() {
                 child: Container(
                   width: 25,
                   height: 25,
-                  decoration: BoxDecoration(color: Colors.redAccent,borderRadius: BorderRadius.circular(25)),
+                  decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(25)),
                   child: Icon(
                     Icons.add,
                     size: 20,
@@ -377,15 +405,27 @@ getButtonList() {
           )),
       IconText(
         text: "999w",
-        icon: Icon(Icons.favorite,size: 50,color: Colors.redAccent,),
+        icon: Icon(
+          Icons.favorite,
+          size: iconSize,
+          color: Colors.redAccent,
+        ),
       ),
       IconText(
         text: "999w",
-        icon: Icon(Icons.feedback,size: 50,color: Colors.white,),
+        icon: Icon(
+          Icons.feedback,
+          size: iconSize,
+          color: Colors.white,
+        ),
       ),
       IconText(
         text: "999w",
-        icon: Icon(Icons.reply,size: 50,color: Colors.white,),
+        icon: Icon(
+          Icons.reply,
+          size: iconSize,
+          color: Colors.white,
+        ),
       ),
     ],
   );
@@ -402,7 +442,10 @@ class IconText extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           icon,
-          Text(text,style: TextStyle(color: Colors.white),),
+          Text(
+            text,
+            style: TextStyle(color: Colors.white),
+          ),
         ],
       ),
     );

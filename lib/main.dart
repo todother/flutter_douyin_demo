@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
+import 'package:video_player/video_player.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +16,12 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: Container(
           decoration: BoxDecoration(color: Colors.grey[500]),
-          child: Home(),
+          child: Stack(
+            children: [
+              VideoBack(),
+              Home(),
+            ]
+          ),
         ),
         bottomNavigationBar: BottomAppBar(
           child: Container(
@@ -25,6 +31,47 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class VideoBack extends StatefulWidget {
+  VideoBack({Key key}) : super(key: key);
+
+  _VideoBackState createState() => _VideoBackState();
+}
+
+class _VideoBackState extends State<VideoBack> {
+  VideoPlayerController _controller;
+    bool _isPlaying = false;
+    String url = "https://www.guojio.com/video/07a7faa1-3696-4af7-aeac-2d6cf6bf25f9.mp4";
+
+    @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+        _controller = VideoPlayerController.network(this.url)
+        // 播放状态
+        ..addListener(() {
+            final bool isPlaying = _controller.value.isPlaying;
+            if (isPlaying != _isPlaying) {
+                setState(() { _isPlaying = isPlaying; });
+            }
+        })
+        // 在初始化完成后必须更新界面
+        ..initialize().then((_) {
+            setState(() {});
+        });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+       child:  _controller.value.initialized
+                    // 加载成功
+                    ? new AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        child: VideoPlayer(_controller),
+                    ) : new Container(),
     );
   }
 }

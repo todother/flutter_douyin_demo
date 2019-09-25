@@ -20,7 +20,7 @@ class RecommendProvider with ChangeNotifier {
   Reply reply = Reply(
     ifFaved: true,
     afterReplies: List<Reply>(),
-    replyContent: "真可爱，真好看，真厉害~",
+    replyContent: "真可爱，真好看，真厉害~真可爱，真好看，真厉害~",
     replyMakerAvatar: "https://pic2.zhimg.com/v2-a88cd7618933272ca681f86398e6240d_xll.jpg",
     replyMakerName: "ABC",
     whenReplied: "3小时前"

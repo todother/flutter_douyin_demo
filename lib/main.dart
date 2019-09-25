@@ -518,7 +518,6 @@ showBottom(context) {
           providers: [ChangeNotifierProvider(builder: (context)=>RecommendProvider(),)],
           
             child: Container(
-              
               height: 600,
               child: ReplyFullList()),
             )

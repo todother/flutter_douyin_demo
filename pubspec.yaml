@@ -26,6 +26,7 @@ dependencies:
   marquee: 
   video_player: 
   marquee_flutter:
+  provider: 
 
 dev_dependencies:
   flutter_test:
@@ -44,8 +45,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
+  assets:
+   - lib/images/pingguo.jpeg
+  #  - lib/images/aaa.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

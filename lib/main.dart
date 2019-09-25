@@ -1,6 +1,9 @@
+import 'package:douyin_demo/pages/RecommendPage/BottomSheet.dart';
+import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
+// import 'package:marquee/marquee.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -14,26 +17,55 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "某音",
-      home: Scaffold(
-        body: Container(
+      home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              builder: (context) => RecommendProvider(),
+            )
+          ],
+          child: Scaffold(
+            body: Container(
+              decoration: BoxDecoration(color: Colors.black),
+              child: Stack(children: [
+                CenterImage(),
+                Home(),
+              ]),
+            ),
+            bottomNavigationBar: BottomSafeBar(),
+          )),
+    );
+  }
+}
+
+class BottomSafeBar extends StatelessWidget {
+  const BottomSafeBar({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    return Container(
+      decoration: BoxDecoration(color: Colors.black),
+      child: SafeArea(
+          child: BottomAppBar(
+        child: Container(
           decoration: BoxDecoration(color: Colors.black),
-          child: Stack(children: [
-            VideoBack(),
-            Home(),
-          ]),
+          height: 60,
+          // decoration: BoxDecoration(color: Colors.black),
+          child: BtmBar(),
         ),
-        bottomNavigationBar: Container(
-            decoration: BoxDecoration(color: Colors.black),
-            child: SafeArea(
-                child: BottomAppBar(
-              child: Container(
-                decoration: BoxDecoration(color: Colors.black),
-                height: 60,
-                // decoration: BoxDecoration(color: Colors.black),
-                child: BtmBar(),
-              ),
-            ))),
-      ),
+      )),
+    );
+  }
+}
+
+class CenterImage extends StatelessWidget {
+  const CenterImage({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    return Center(
+      child: Image.asset(provider.mainInfo.videoPath),
     );
   }
 }
@@ -91,6 +123,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    double rpx = screenWidth / 750;
     return Stack(children: [
       Positioned(
         top: 0,
@@ -105,7 +139,7 @@ class Home extends StatelessWidget {
       Positioned(
         bottom: 0,
         width: 0.70 * screenWidth,
-        height: 140,
+        height: 260 * rpx,
         child: Container(
           // decoration: BoxDecoration(color: Colors.redAccent),
           child: BtnContent(),
@@ -114,21 +148,19 @@ class Home extends StatelessWidget {
       Positioned(
         right: 0,
         width: 0.2 * screenWidth,
-        height: 0.37 * screenHeight,
-        top: 0.4 * screenHeight,
+        height: 500 * rpx,
+        top: 0.45 * screenHeight,
         child: Container(
           // decoration: BoxDecoration(color: Colors.orangeAccent),
-          child: getButtonList(),
+          child: getButtonList(rpx, provider, context),
         ),
       ),
       Positioned(
-        bottom: 10,
+        bottom: 20 * rpx,
         right: 0,
         width: 0.2 * screenWidth,
         height: 0.2 * screenWidth,
         child: Container(
-          width: 20,
-          height: 20,
           // decoration: BoxDecoration(color: Colors.purpleAccent),
           child: RotateAlbum(),
         ),
@@ -155,22 +187,23 @@ class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    double rpx = MediaQuery.of(context).size.width / 750;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          width: 10,
+          width: 17 * rpx,
         ),
         Icon(
           Icons.search,
-          size: 30,
+          size: 50 * rpx,
           color: Colors.white,
         ),
         Container(
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 50),
-                width: 280,
+                padding: EdgeInsets.symmetric(horizontal: 90 * rpx),
+                width: 500 * rpx,
                 child: TabBar(
                   indicatorColor: Colors.white,
                   labelStyle: TextStyle(color: Colors.white, fontSize: 20),
@@ -198,6 +231,7 @@ class BtmBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -216,8 +250,12 @@ class BtmBar extends StatelessWidget {
 getBtmTextWidget(String content, bool ifSelected) {
   return Text("$content",
       style: ifSelected
-          ? TextStyle(fontSize: 16, color: Colors.white,fontWeight: FontWeight.bold)
-          : TextStyle(fontSize: 16, color: Colors.grey[600],fontWeight: FontWeight.bold));
+          ? TextStyle(
+              fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)
+          : TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.bold));
 }
 
 class AddIcon extends StatelessWidget {
@@ -225,9 +263,9 @@ class AddIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double iconHeight=30;
-    double totalWidth=50;
-    double eachSide=3;
+    double iconHeight = 30;
+    double totalWidth = 50;
+    double eachSide = 3;
     return Container(
       // decoration: BoxDecoration(),
       height: iconHeight,
@@ -236,7 +274,7 @@ class AddIcon extends StatelessWidget {
         children: <Widget>[
           Positioned(
             height: iconHeight,
-            width: totalWidth-eachSide,
+            width: totalWidth - eachSide,
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.cyan, borderRadius: BorderRadius.circular(10)),
@@ -244,7 +282,7 @@ class AddIcon extends StatelessWidget {
           ),
           Positioned(
             height: iconHeight,
-            width: totalWidth-eachSide,
+            width: totalWidth - eachSide,
             right: 0,
             child: Container(
               decoration: BoxDecoration(
@@ -254,7 +292,7 @@ class AddIcon extends StatelessWidget {
           ),
           Positioned(
             height: iconHeight,
-            width: totalWidth-eachSide*2,
+            width: totalWidth - eachSide * 2,
             right: eachSide,
             child: Container(
               decoration: BoxDecoration(
@@ -273,21 +311,19 @@ class BtnContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
             title: Text(
-              "@人民日报",
-              style: TextStyle(color: Colors.white,fontSize: 16),
+              "@${provider.mainInfo.userName}",
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
             subtitle: Text(
-              "奥斯卡答复哈士大夫哈师大发输电和健康阿萨德鸿福路口氨基酸的鸿福路口啊,奥斯卡答复哈士大夫哈师大发输电和健康阿萨德鸿福路口氨基酸的鸿福路口啊",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16
-              ),
+              "${provider.mainInfo.content}",
+              style: TextStyle(color: Colors.white, fontSize: 16),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
@@ -297,15 +333,21 @@ class BtnContent extends StatelessWidget {
               SizedBox(
                 width: 10,
               ),
-              Icon(Icons.music_note,color: Colors.white,),
+              Icon(
+                Icons.music_note,
+                color: Colors.white,
+              ),
               // Marquee(text: "",),
-              
-                Container(
+
+              Container(
                   width: 200,
                   height: 20,
                   child: MarqueeWidget(
-                    text: '人民日报创作的一些比较有意思的东西',
-                    textStyle: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16),
+                    text: '${provider.mainInfo.desc}',
+                    textStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 16),
                     // scrollAxis: Axis.horizontal,
                     // crossAxisAlignment: CrossAxisAlignment.start,
                     // blankSpace: 20.0,
@@ -316,9 +358,7 @@ class BtnContent extends StatelessWidget {
                     // accelerationCurve: Curves.linear,
                     // decelerationDuration: Duration(milliseconds: 500),
                     // decelerationCurve: Curves.easeOut,
-                  )
-                )
-              
+                  ))
             ],
           )
         ],
@@ -367,30 +407,29 @@ class _RotateAlbumState extends State<RotateAlbum>
   }
 }
 
-getButtonList() {
-  double iconSize=40;
+getButtonList(double rpx, RecommendProvider provider, BuildContext context) {
+  double iconSize = 70 * rpx;
   return Column(
-
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: <Widget>[
       Container(
-          width: 60,
-          height: 70,
+          width: 90 * rpx,
+          height: 105 * rpx,
           child: Stack(
             children: <Widget>[
               Container(
-                  width: 60,
-                  height: 60,
+                  width: 90 * rpx,
+                  height: 90 * rpx,
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://pic2.zhimg.com/v2-a88cd7618933272ca681f86398e6240d_xll.jpg"),
+                    backgroundImage:
+                        NetworkImage("${provider.mainInfo.avatarUrl}"),
                   )),
               Positioned(
                 bottom: 0,
-                left: 17.5,
+                left: 25 * rpx,
                 child: Container(
-                  width: 25,
-                  height: 25,
+                  width: 40 * rpx,
+                  height: 40 * rpx,
                   decoration: BoxDecoration(
                       color: Colors.redAccent,
                       borderRadius: BorderRadius.circular(25)),
@@ -404,28 +443,40 @@ getButtonList() {
             ],
           )),
       IconText(
-        text: "999w",
-        icon: Icon(
-          Icons.favorite,
-          size: iconSize,
-          color: Colors.redAccent,
-        ),
+        text: "${provider.mainInfo.favCount}",
+        icon: IconButton(
+            onPressed: () {
+              provider.tapFav();
+            },
+            icon: Icon(
+              Icons.favorite,
+              size: iconSize,
+              color: provider.mainInfo.ifFaved
+                  ? Colors.redAccent
+                  : Colors.grey[100],
+            )),
       ),
       IconText(
-        text: "999w",
-        icon: Icon(
-          Icons.feedback,
-          size: iconSize,
-          color: Colors.white,
-        ),
+        text: "${provider.mainInfo.replyCount}",
+        icon: IconButton(
+            onPressed: () {
+              showBottom(context);
+            },
+            icon: Icon(
+              Icons.feedback,
+              size: iconSize,
+              color: Colors.white,
+            )),
       ),
       IconText(
-        text: "999w",
-        icon: Icon(
-          Icons.reply,
-          size: iconSize,
-          color: Colors.white,
-        ),
+        text: "${provider.mainInfo.shareCount}",
+        icon: IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.reply,
+              size: iconSize,
+              color: Colors.white,
+            )),
       ),
     ],
   );
@@ -433,7 +484,7 @@ getButtonList() {
 
 class IconText extends StatelessWidget {
   const IconText({Key key, this.icon, this.text}) : super(key: key);
-  final Icon icon;
+  final IconButton icon;
   final String text;
   @override
   Widget build(BuildContext context) {
@@ -442,12 +493,36 @@ class IconText extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           icon,
-          Text(
-            text,
-            style: TextStyle(color: Colors.white),
-          ),
+          Container(
+              alignment: Alignment.center,
+              child: Text(
+                text,
+                style: TextStyle(color: Colors.white, fontSize: 11),
+              )),
         ],
       ),
     );
   }
+}
+
+showBottom(context) {
+  RecommendProvider provider = Provider.of<RecommendProvider>(context);
+  // ScrollController controller=ScrollController();
+  provider.hideBottomBar();
+  showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusDirectional.circular(10)),
+      context: context,
+      builder: (_) {
+        return MultiProvider(
+          providers: [ChangeNotifierProvider(builder: (context)=>RecommendProvider(),)],
+          
+            child: Container(
+              
+              height: 600,
+              child: ReplyFullList()),
+            )
+          ;
+      });
+      
 }

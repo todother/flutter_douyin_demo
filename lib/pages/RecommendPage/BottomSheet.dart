@@ -16,29 +16,40 @@ class ReplyFullList extends StatelessWidget {
     replies.add(reply);
     replies.add(reply);
     ScrollController controller = ScrollController();
-    return SingleChildScrollView(
-        controller: controller,
-        child: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                height: 80 * rpx,
-                child: ListTile(
-                  leading: Container(
-                    width: 10 * rpx,
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {},
-                  ),
-                  title: Center(child: Text("10条评论")),
+    return Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(80*rpx),
+          child: AppBar(
+            leading: Container(),
+            elevation:0,
+            backgroundColor: Colors.grey[50],
+            actions: <Widget>[
+              
+              IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.black,
                 ),
-              ),
-              genReplyList(replies, controller)
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
             ],
-          ),
-        ));
+            title: Text(
+              "10条评论",
+              style: TextStyle(color: Colors.grey[700],fontSize: 25*rpx),
+            ),
+            // elevation: 1,
+          )
+        ),
+        bottomNavigationBar: SafeArea(
+          child: BottomReplyBar(),
+        ),
+        body: SingleChildScrollView(
+            controller: controller,
+            child: Container(
+              child: genReplyList(replies, controller),
+            )));
   }
 }
 
@@ -138,8 +149,7 @@ class AfterReply extends StatelessWidget {
                               style: TextStyle(color: Colors.grey[500]),
                               children: [
                                 TextSpan(text: "  ${afterReply.whenReplied}")
-                              ]
-                              ),
+                              ]),
                         ),
 
                         // Text(
@@ -195,4 +205,31 @@ genAfterReplyList(List<Reply> replies, ScrollController controller) {
       );
     },
   );
+}
+
+class BottomReplyBar extends StatelessWidget {
+  const BottomReplyBar({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController _controller=TextEditingController();
+    double toBottom=MediaQuery.of(context).viewInsets.bottom;
+    double rpx=MediaQuery.of(context).size.width/750;
+    return Container(
+      padding: EdgeInsets.only(bottom: toBottom),
+      decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.grey[200],width: 1))),
+      child: Row(children: <Widget>[
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.only(left: 30*rpx),
+            // width: 600*rspx,
+            child: TextField(controller: _controller,decoration: InputDecoration(hintText: "留下你的精彩评论",border: InputBorder.none),),
+          )
+        ),
+        IconButton(icon: Icon(Icons.email,color: Colors.grey[500],size: 50*rpx,),onPressed: (){},),
+        IconButton(icon: Icon(Icons.face,color: Colors.grey[500],size: 50*rpx),onPressed: (){},),
+        SizedBox(width: 20*rpx,)
+      ],),
+    );
+  }
 }

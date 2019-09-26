@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:douyin_demo/pages/RecommendPage/BottomSheet.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+
+import 'widgets/FavAnimation.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,6 +28,7 @@ class MyApp extends StatelessWidget {
             )
           ],
           child: Scaffold(
+            resizeToAvoidBottomInset:false,
             body: Container(
               decoration: BoxDecoration(color: Colors.black),
               child: Stack(children: [
@@ -43,7 +48,9 @@ class BottomSafeBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    // double toBottom=MediaQuery.of(context).viewInsets.bottom;
     return Container(
+      padding: EdgeInsets.only(bottom: 0),
       decoration: BoxDecoration(color: Colors.black),
       child: SafeArea(
           child: BottomAppBar(
@@ -121,6 +128,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("rebuild");
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
@@ -339,26 +347,26 @@ class BtnContent extends StatelessWidget {
               ),
               // Marquee(text: "",),
 
-              Container(
-                  width: 200,
-                  height: 20,
-                  child: MarqueeWidget(
-                    text: '${provider.mainInfo.desc}',
-                    textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 16),
-                    // scrollAxis: Axis.horizontal,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    // blankSpace: 20.0,
-                    // velocity: 100.0,
-                    // pauseAfterRound: Duration(seconds: 1),
-                    // startPadding: 10.0,
-                    // accelerationDuration: Duration(seconds: 1),
-                    // accelerationCurve: Curves.linear,
-                    // decelerationDuration: Duration(milliseconds: 500),
-                    // decelerationCurve: Curves.easeOut,
-                  ))
+              // Container(
+              //     width: 200,
+              //     height: 20,
+              //     child: MarqueeWidget(
+              //       text: '${provider.mainInfo.desc}',
+              //       textStyle: TextStyle(
+              //           fontWeight: FontWeight.bold,
+              //           color: Colors.white,
+              //           fontSize: 16),
+              //       // scrollAxis: Axis.horizontal,
+              //       // crossAxisAlignment: CrossAxisAlignment.start,
+              //       // blankSpace: 20.0,
+              //       // velocity: 100.0,
+              //       // pauseAfterRound: Duration(seconds: 1),
+              //       // startPadding: 10.0,
+              //       // accelerationDuration: Duration(seconds: 1),
+              //       // accelerationCurve: Curves.linear,
+              //       // decelerationDuration: Duration(milliseconds: 500),
+              //       // decelerationCurve: Curves.easeOut,
+              //     ))
             ],
           )
         ],
@@ -411,6 +419,7 @@ getButtonList(double rpx, RecommendProvider provider, BuildContext context) {
   double iconSize = 70 * rpx;
   return Column(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
       Container(
           width: 90 * rpx,
@@ -445,20 +454,19 @@ getButtonList(double rpx, RecommendProvider provider, BuildContext context) {
       IconText(
         text: "${provider.mainInfo.favCount}",
         icon: IconButton(
+          padding: EdgeInsets.all(0),
             onPressed: () {
               provider.tapFav();
             },
-            icon: Icon(
-              Icons.favorite,
+            icon: provider.mainInfo.ifFaved? AnimateFav(
               size: iconSize,
-              color: provider.mainInfo.ifFaved
-                  ? Colors.redAccent
-                  : Colors.grey[100],
-            )),
+            ):AnimatedUnFav(size: iconSize,)
+          ),
       ),
       IconText(
         text: "${provider.mainInfo.replyCount}",
         icon: IconButton(
+          padding: EdgeInsets.all(0),
             onPressed: () {
               showBottom(context);
             },
@@ -471,6 +479,7 @@ getButtonList(double rpx, RecommendProvider provider, BuildContext context) {
       IconText(
         text: "${provider.mainInfo.shareCount}",
         icon: IconButton(
+          padding: EdgeInsets.all(0),
             onPressed: () {},
             icon: Icon(
               Icons.reply,
@@ -488,16 +497,19 @@ class IconText extends StatelessWidget {
   final String text;
   @override
   Widget build(BuildContext context) {
+    double rpx=MediaQuery.of(context).size.width/750;
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,  
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           icon,
           Container(
-              alignment: Alignment.center,
+              // alignment: Alignment.center,
               child: Text(
                 text,
-                style: TextStyle(color: Colors.white, fontSize: 11),
+                style: TextStyle(color: Colors.white, fontSize: 25*rpx),
               )),
         ],
       ),
@@ -515,13 +527,16 @@ showBottom(context) {
       context: context,
       builder: (_) {
         return MultiProvider(
-          providers: [ChangeNotifierProvider(builder: (context)=>RecommendProvider(),)],
-          
-            child: Container(
-              height: 600,
-              child: ReplyFullList()),
+          providers: [
+            ChangeNotifierProvider(
+              builder: (context) => RecommendProvider(),
             )
-          ;
+          ],
+          child: Container(height: 600, child: GestureDetector(
+            onTap: (){FocusScope.of(context).requestFocus(FocusNode());},
+            child: ReplyFullList()
+          )),
+        );
       });
-      
 }
+

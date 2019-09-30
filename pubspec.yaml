@@ -27,6 +27,8 @@ dependencies:
   video_player: 
   marquee_flutter:
   provider: 
+  lpinyin:
+  sticky_headers:
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:douyin_demo/pages/RecommendPage/BottomSheet.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
+import 'package:douyin_demo/widgets/FavAnimation.dart' as prefix0;
 import 'package:flutter/material.dart';
 // import 'package:marquee/marquee.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
@@ -28,7 +27,7 @@ class MyApp extends StatelessWidget {
             )
           ],
           child: Scaffold(
-            resizeToAvoidBottomInset:false,
+            resizeToAvoidBottomInset: false,
             body: Container(
               decoration: BoxDecoration(color: Colors.black),
               child: Stack(children: [
@@ -50,7 +49,7 @@ class BottomSafeBar extends StatelessWidget {
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
     // double toBottom=MediaQuery.of(context).viewInsets.bottom;
     return Container(
-      padding: EdgeInsets.only(bottom: 0),
+      // padding: EdgeInsets.only(top:toBottom),
       decoration: BoxDecoration(color: Colors.black),
       child: SafeArea(
           child: BottomAppBar(
@@ -70,9 +69,12 @@ class CenterImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double bottom = MediaQuery.of(context).viewInsets.bottom;
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
     return Center(
-      child: Image.asset(provider.mainInfo.videoPath),
+      child: Container(
+          // padding: EdgeInsets.only(top: bottom),
+          child: Image.asset(provider.mainInfo.videoPath)),
     );
   }
 }
@@ -128,10 +130,10 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("rebuild");
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
+
     double rpx = screenWidth / 750;
     return Stack(children: [
       Positioned(
@@ -160,7 +162,7 @@ class Home extends StatelessWidget {
         top: 0.45 * screenHeight,
         child: Container(
           // decoration: BoxDecoration(color: Colors.orangeAccent),
-          child: getButtonList(rpx, provider, context),
+          child: ButtonList(),
         ),
       ),
       Positioned(
@@ -415,128 +417,196 @@ class _RotateAlbumState extends State<RotateAlbum>
   }
 }
 
-getButtonList(double rpx, RecommendProvider provider, BuildContext context) {
-  double iconSize = 70 * rpx;
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: <Widget>[
-      Container(
-          width: 90 * rpx,
-          height: 105 * rpx,
-          child: Stack(
-            children: <Widget>[
-              Container(
-                  width: 90 * rpx,
-                  height: 90 * rpx,
-                  child: CircleAvatar(
-                    backgroundImage:
-                        NetworkImage("${provider.mainInfo.avatarUrl}"),
-                  )),
-              Positioned(
-                bottom: 0,
-                left: 25 * rpx,
-                child: Container(
-                  width: 40 * rpx,
-                  height: 40 * rpx,
-                  decoration: BoxDecoration(
-                      color: Colors.redAccent,
-                      borderRadius: BorderRadius.circular(25)),
-                  child: Icon(
-                    Icons.add,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            ],
-          )),
-      IconText(
-        text: "${provider.mainInfo.favCount}",
-        icon: IconButton(
-          padding: EdgeInsets.all(0),
-            onPressed: () {
-              provider.tapFav();
-            },
-            icon: provider.mainInfo.ifFaved? AnimateFav(
-              size: iconSize,
-            ):AnimatedUnFav(size: iconSize,)
-          ),
-      ),
-      IconText(
-        text: "${provider.mainInfo.replyCount}",
-        icon: IconButton(
-          padding: EdgeInsets.all(0),
-            onPressed: () {
-              showBottom(context);
-            },
-            icon: Icon(
-              Icons.feedback,
-              size: iconSize,
-              color: Colors.white,
-            )),
-      ),
-      IconText(
-        text: "${provider.mainInfo.shareCount}",
-        icon: IconButton(
-          padding: EdgeInsets.all(0),
-            onPressed: () {},
-            icon: Icon(
-              Icons.reply,
-              size: iconSize,
-              color: Colors.white,
-            )),
-      ),
-    ],
-  );
+class ButtonList extends StatefulWidget {
+  ButtonList({Key key}) : super(key: key);
+
+  _ButtonListState createState() => _ButtonListState();
 }
 
-class IconText extends StatelessWidget {
-  const IconText({Key key, this.icon, this.text}) : super(key: key);
-  final IconButton icon;
-  final String text;
+class _ButtonListState extends State<ButtonList> {
   @override
   Widget build(BuildContext context) {
-    double rpx=MediaQuery.of(context).size.width/750;
+    double rpx = MediaQuery.of(context).size.width / 750;
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    List<IconAnimationStage> stages1 = List<IconAnimationStage>();
+    stages1.add(IconAnimationStage(
+        color: Colors.grey[100],
+        start: 1.0,
+        end: 0.0,
+        duration: Duration(milliseconds: 200)));
+    stages1.add(IconAnimationStage(
+        color: Colors.redAccent,
+        start: 0.0,
+        end: 1.3,
+        duration: Duration(milliseconds: 300)));
+    stages1.add(IconAnimationStage(
+        color: Colors.redAccent,
+        start: 1.3,
+        end: 1.0,
+        duration: Duration(milliseconds: 100)));
+
+    List<IconAnimationStage> stages2 = List<IconAnimationStage>();
+    stages2.add(IconAnimationStage(
+        color: Colors.grey[100],
+        start: 1.0,
+        end: 1.2,
+        duration: Duration(milliseconds: 200)));
+    stages2.add(IconAnimationStage(
+        color: Colors.grey[100],
+        start: 1.2,
+        end: 1.0,
+        duration: Duration(milliseconds: 200)));
+
+    List<IconAnimationStage> stages3 = List<IconAnimationStage>();
+    stages3.add(IconAnimationStage(
+        color: Colors.redAccent,
+        start: 1.0,
+        end: 1.2,
+        duration: Duration(milliseconds: 200)));
+    stages3.add(IconAnimationStage(
+        color: Colors.grey[100],
+        start: 1.2,
+        end: 1.0,
+        duration: Duration(milliseconds: 200)));
+    double iconSize = 70 * rpx;
     return Container(
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,  
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          icon,
           Container(
-              // alignment: Alignment.center,
-              child: Text(
-                text,
-                style: TextStyle(color: Colors.white, fontSize: 25*rpx),
+              width: 90 * rpx,
+              height: 105 * rpx,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                      width: 90 * rpx,
+                      height: 90 * rpx,
+                      child: CircleAvatar(
+                        backgroundImage:
+                            NetworkImage("${provider.mainInfo.avatarUrl}"),
+                      )),
+                  Positioned(
+                    bottom: 0,
+                    left: 25 * rpx,
+                    child: Container(
+                      width: 40 * rpx,
+                      height: 40 * rpx,
+                      decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(25)),
+                      child: Icon(
+                        Icons.add,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ],
               )),
+          IconText(
+            text: "${provider.mainInfo.favCount}",
+            icon: !provider.mainInfo.ifFaved
+                ? AnimatedIconWidget(
+                    key: UniqueKey(),
+                    animationList: stages1,
+                    icon: Icons.favorite,
+                    size: iconSize,
+                    provider: provider,
+                    callback: () {
+                      provider.tapFav();
+                    })
+                : AnimatedIconWidget(
+                    key: UniqueKey(),
+                    animationList: stages3,
+                    icon: Icons.favorite,
+                    size: iconSize,
+                    provider: provider,
+                    callback: () {
+                      provider.tapFav();
+                    },
+                  ),
+          ),
+          IconText(
+            text: "${provider.mainInfo.replyCount}",
+            icon: AnimatedIconWidget(
+              animationList: stages2,
+              icon: Icons.comment,
+              size: iconSize,
+              callbackDelay: Duration(milliseconds: 200),
+              callback: () {
+                showBottom(context, provider);
+              },
+            ),
+          ),
+          IconText(
+            text: "${provider.mainInfo.shareCount}",
+            icon: AnimatedIconWidget(
+              animationList: stages2,
+              icon: Icons.reply,
+              size: iconSize,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-showBottom(context) {
-  RecommendProvider provider = Provider.of<RecommendProvider>(context);
-  // ScrollController controller=ScrollController();
+// class ButtonList extends StatelessWidget {
+//   const ButtonList({Key key}) : super(key: key);
+
+//   @override
+
+// }
+
+// getButtonList(double rpx, RecommendProvider provider, BuildContext context) {
+
+//   return
+// }
+
+class IconText extends StatelessWidget {
+  const IconText({Key key, this.icon, this.text}) : super(key: key);
+  final AnimatedIconWidget icon;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    double rpx = MediaQuery.of(context).size.width / 750;
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          icon,
+          Container(
+              // alignment: Alignment.center,
+              child: Text(
+            text,
+            style: TextStyle(color: Colors.white, fontSize: 25 * rpx),
+          )),
+        ],
+      ),
+    );
+  }
+}
+
+showBottom(context, provider) {
+  // RecommendProvider provider = Provider.of<RecommendProvider>(context);
+  double height = MediaQuery.of(context).size.height;
+  provider.setScreenHeight(height);
   provider.hideBottomBar();
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusDirectional.circular(10)),
       context: context,
       builder: (_) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              builder: (context) => RecommendProvider(),
-            )
-          ],
-          child: Container(height: 600, child: GestureDetector(
-            onTap: (){FocusScope.of(context).requestFocus(FocusNode());},
-            child: ReplyFullList()
-          )),
-        );
+        return Container(
+            height: 600,
+            child: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: ReplyFullList(pCtx:context)));
       });
 }
-

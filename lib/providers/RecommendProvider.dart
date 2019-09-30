@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 class RecommendProvider with ChangeNotifier {
   bool ifShowBottom=true;
+
+  double screenHeight;
   MainInfo mainInfo = MainInfo(
       avatarUrl:
           "https://pic2.zhimg.com/v2-a88cd7618933272ca681f86398e6240d_xll.jpg",
@@ -28,7 +30,10 @@ class RecommendProvider with ChangeNotifier {
 
   
 
-  
+  setScreenHeight(height){
+    screenHeight=height;
+    notifyListeners();
+  }
 
   hideBottomBar(){
     ifShowBottom=false;

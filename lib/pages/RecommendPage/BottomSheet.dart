@@ -1,14 +1,16 @@
+import 'package:douyin_demo/pages/RecommendPage/FriendList.dart';
+import 'package:douyin_demo/providers/AtUserProvider.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ReplyFullList extends StatelessWidget {
-  const ReplyFullList({Key key}) : super(key: key);
-
+  const ReplyFullList({Key key,this.pCtx}) : super(key: key);
+  final BuildContext pCtx;
   @override
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
-    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    RecommendProvider provider = Provider.of<RecommendProvider>(pCtx);
     Reply reply = provider.reply;
     List<Reply> replies = List<Reply>();
 
@@ -43,7 +45,7 @@ class ReplyFullList extends StatelessWidget {
           )
         ),
         bottomNavigationBar: SafeArea(
-          child: BottomReplyBar(),
+          child: BottomReplyBar(pCtx: pCtx,),
         ),
         body: SingleChildScrollView(
             controller: controller,
@@ -208,8 +210,8 @@ genAfterReplyList(List<Reply> replies, ScrollController controller) {
 }
 
 class BottomReplyBar extends StatelessWidget {
-  const BottomReplyBar({Key key}) : super(key: key);
-
+  const BottomReplyBar({Key key,this.pCtx}) : super(key: key);
+  final BuildContext pCtx;
   @override
   Widget build(BuildContext context) {
     TextEditingController _controller=TextEditingController();
@@ -226,10 +228,22 @@ class BottomReplyBar extends StatelessWidget {
             child: TextField(controller: _controller,decoration: InputDecoration(hintText: "留下你的精彩评论",border: InputBorder.none),),
           )
         ),
-        IconButton(icon: Icon(Icons.email,color: Colors.grey[500],size: 50*rpx,),onPressed: (){},),
+        IconButton(icon: Icon(Icons.email,color: Colors.grey[500],size: 50*rpx,),onPressed: (){showAtFriendPage(pCtx);},),
         IconButton(icon: Icon(Icons.face,color: Colors.grey[500],size: 50*rpx),onPressed: (){},),
         SizedBox(width: 20*rpx,)
       ],),
     );
   }
+}
+
+showAtFriendPage(BuildContext context){
+  Navigator.of(context).push(new MaterialPageRoute(
+      builder: (BuildContext context) {
+        return  MultiProvider(
+          providers: [ChangeNotifierProvider(builder:(context)=>AtUserProvider())],
+          child: AtFriendPage()
+        );
+      },
+    fullscreenDialog: true
+  ));
 }

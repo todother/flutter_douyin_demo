@@ -1,7 +1,9 @@
 import 'package:douyin_demo/main.dart';
 import 'package:douyin_demo/pages/sameCity/SameCityPage.dart';
+import 'package:douyin_demo/providers/PostsGalleryProvider.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // class BtmBar extends StatelessWidget {
 //   const BtmBar({Key key}) : super(key: key);
@@ -73,9 +75,12 @@ class _BtmBarState extends State<BtmBar> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (context) => SameCityMain(
-                      selIndex: index,
-                    )),
+                builder: (context) => MultiProvider(
+                  providers: [ChangeNotifierProvider(builder: (context)=>PostsGalleryProvider(),)],
+                  child: SameCityMain(
+                        selIndex: index,
+                      )
+                )),
             ModalRoute.withName("/sameCity"));
         break;
       default:

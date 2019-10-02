@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:douyin_demo/pages/RecommendPage/BottomSheet.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:douyin_demo/widgets/BottomBar.dart';
@@ -6,12 +8,41 @@ import 'package:flutter/material.dart';
 // import 'package:marquee/marquee.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 import 'widgets/FavAnimation.dart';
 
-void main() {
-  runApp(MyApp());
+Future main() async {
+  final prefs = await SharedPreferences.getInstance();
+  // prefs.clear();
+  // String hosts = prefs.get('urlPath');
+  // String scheme = prefs.get('scheme');
+  // int ports = prefs.get('ports');
+  prefs.setBool("ifIOS", Platform.isIOS);
+  prefs.setBool("ifPrd", false);
+  prefs.setBool("ifReal_d", true);
+
+  prefs.setString("urlPath_real_d", "192.168.0.8");
+  prefs.setString("scheme_real_d", "http");
+  prefs.setInt("ports_real_d", 5000);
+
+  prefs.setString("urlPath_ios_d", "127.0.0.1");
+  prefs.setString("scheme_ios_d", "http");
+  prefs.setInt("ports_ios_d", 5000);
+
+  prefs.setString("urlPath_and_d", "10.0.2.2");
+  prefs.setString("scheme_and_d", "http");
+  prefs.setInt("ports_and_d", 5000);
+
+  prefs.setString("urlPath_p", "118.26.177.76");
+  prefs.setString("scheme_p", "http");
+  prefs.setInt("ports_p", 80);
+
+  prefs.setString("picServer", "http://www.guojio.com");
+
+  runApp(MyApp()); 
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

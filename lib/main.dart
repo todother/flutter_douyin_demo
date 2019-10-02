@@ -22,13 +22,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "某音",
       theme: ThemeData(primaryColor: Color(0xff121319)),
-      home: MultiProvider(
+      home: RecommendPage(selIndex: 0,),
+    );
+  }
+}
+
+class RecommendPage extends StatelessWidget {
+  const RecommendPage({Key key,@required this.selIndex}) : super(key: key);
+  final int selIndex;
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
           providers: [
             ChangeNotifierProvider(
               builder: (context) => RecommendProvider(),
             )
           ],
           child: Scaffold(
+            
             resizeToAvoidBottomInset: false,
             body: Container(
               decoration: BoxDecoration(color: Colors.black),
@@ -37,15 +48,14 @@ class MyApp extends StatelessWidget {
                 Home(),
               ]),
             ),
-            bottomNavigationBar: BottomSafeBar(),
-          )),
-    );
+            bottomNavigationBar: BottomSafeBar(selIndex: selIndex,),
+          ));
   }
 }
 
 class BottomSafeBar extends StatelessWidget {
-  const BottomSafeBar({Key key}) : super(key: key);
-
+  const BottomSafeBar({Key key,@required this.selIndex}) : super(key: key);
+  final int selIndex;
   @override
   Widget build(BuildContext context) {
     RecommendProvider provider = Provider.of<RecommendProvider>(context);
@@ -59,7 +69,7 @@ class BottomSafeBar extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.black),
           height: 60,
           // decoration: BoxDecoration(color: Colors.black),
-          child: BtmBar(selectIndex: 0,),
+          child: BtmBar(selectIndex: selIndex,),
         ),
       )),
     );
@@ -204,6 +214,7 @@ class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        // BottomNavigationBar(items: [BottomNavigationBarItem(icon: null,)],)
         SizedBox(
           width: 17 * rpx,
         ),
@@ -224,6 +235,8 @@ class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
                       TextStyle(color: Colors.grey[700], fontSize: 18),
                   controller: _controller,
                   tabs: <Widget>[Text("关注"), Text("推荐")],
+                  
+                  
                 ))),
         Icon(
           Icons.live_tv,
@@ -320,7 +333,7 @@ class _RotateAlbumState extends State<RotateAlbum>
       turns: Tween(begin: 0.0, end: 1.0).animate(_controller)
         ..addStatusListener((status) {
           if (status == AnimationStatus.completed) {
-            _controller.forward(from: 0.0);
+            // _controller.forward(from: 0.0);
           }
         }),
       child: Container(
@@ -330,6 +343,13 @@ class _RotateAlbumState extends State<RotateAlbum>
       )),
     );
     _controller.forward(from: 0.0);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

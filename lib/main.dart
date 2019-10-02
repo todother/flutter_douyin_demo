@@ -1,6 +1,7 @@
 import 'package:douyin_demo/pages/RecommendPage/BottomSheet.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
-import 'package:douyin_demo/widgets/FavAnimation.dart' as prefix0;
+import 'package:douyin_demo/widgets/BottomBar.dart';
+// import 'package:douyin_demo/widgets/FavAnimation.dart' as prefix0;
 import 'package:flutter/material.dart';
 // import 'package:marquee/marquee.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "某音",
+      theme: ThemeData(primaryColor: Color(0xff121319)),
       home: MultiProvider(
           providers: [
             ChangeNotifierProvider(
@@ -57,7 +59,7 @@ class BottomSafeBar extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.black),
           height: 60,
           // decoration: BoxDecoration(color: Colors.black),
-          child: BtmBar(),
+          child: BtmBar(selectIndex: 0,),
         ),
       )),
     );
@@ -137,7 +139,7 @@ class Home extends StatelessWidget {
     double rpx = screenWidth / 750;
     return Stack(children: [
       Positioned(
-        top: 0,
+        top: 20*rpx,
         // height: 120,
         width: screenWidth,
         child: SafeArea(
@@ -236,85 +238,7 @@ class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
   }
 }
 
-class BtmBar extends StatelessWidget {
-  const BtmBar({Key key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    RecommendProvider provider = Provider.of<RecommendProvider>(context);
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          getBtmTextWidget("首页", true),
-          getBtmTextWidget("同城", false),
-          AddIcon(),
-          getBtmTextWidget("消息", false),
-          getBtmTextWidget("我", false),
-        ],
-      ),
-    );
-  }
-}
-
-getBtmTextWidget(String content, bool ifSelected) {
-  return Text("$content",
-      style: ifSelected
-          ? TextStyle(
-              fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)
-          : TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.bold));
-}
-
-class AddIcon extends StatelessWidget {
-  const AddIcon({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    double iconHeight = 30;
-    double totalWidth = 50;
-    double eachSide = 3;
-    return Container(
-      // decoration: BoxDecoration(),
-      height: iconHeight,
-      width: 50,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            height: iconHeight,
-            width: totalWidth - eachSide,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.cyan, borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
-          Positioned(
-            height: iconHeight,
-            width: totalWidth - eachSide,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.redAccent,
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
-          Positioned(
-            height: iconHeight,
-            width: totalWidth - eachSide * 2,
-            right: eachSide,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              child: Icon(Icons.add),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class BtnContent extends StatelessWidget {
   const BtnContent({Key key}) : super(key: key);
@@ -396,7 +320,7 @@ class _RotateAlbumState extends State<RotateAlbum>
       turns: Tween(begin: 0.0, end: 1.0).animate(_controller)
         ..addStatusListener((status) {
           if (status == AnimationStatus.completed) {
-            // _controller.forward(from: 0.0);
+            _controller.forward(from: 0.0);
           }
         }),
       child: Container(
@@ -480,6 +404,7 @@ class _ButtonListState extends State<ButtonList> {
               child: Stack(
                 children: <Widget>[
                   Container(
+                    // decoration: BoxDecoration(c),
                       width: 90 * rpx,
                       height: 90 * rpx,
                       child: CircleAvatar(

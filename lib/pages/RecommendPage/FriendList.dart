@@ -31,8 +31,8 @@ class AtFriendPage extends StatelessWidget {
                 bottom: PreferredSize(
                   preferredSize: Size.fromHeight(80 * rpx),
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20 * rpx),
-                    decoration: BoxDecoration(color: Colors.grey[700]),
+                    margin: EdgeInsets.symmetric(horizontal: 30 * rpx),
+                    decoration: BoxDecoration(color: Color(0xff2a2b33)),
                     padding: EdgeInsets.symmetric(horizontal: 20 * rpx),
                     child: TextField(
                       decoration: InputDecoration(

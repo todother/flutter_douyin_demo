@@ -5,6 +5,7 @@ import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:douyin_demo/widgets/BottomBar.dart';
 // import 'package:douyin_demo/widgets/FavAnimation.dart' as prefix0;
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 // import 'package:marquee/marquee.dart';
 import 'package:marquee_flutter/marquee_flutter.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,7 @@ Future main() async {
   // int ports = prefs.get('ports');
   prefs.setBool("ifIOS", Platform.isIOS);
   prefs.setBool("ifPrd", false);
-  prefs.setBool("ifReal_d", true);
+  prefs.setBool("ifReal_d", false);
 
   prefs.setString("urlPath_real_d", "192.168.0.8");
   prefs.setString("scheme_real_d", "http");
@@ -41,7 +42,7 @@ Future main() async {
 
   prefs.setString("picServer", "http://www.guojio.com");
 
-  runApp(MyApp()); 
+  runApp(MyApp());
   // runApp(MyApp());
 }
 
@@ -53,39 +54,140 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "某音",
       theme: ThemeData(primaryColor: Color(0xff121319)),
-      home: RecommendPage(selIndex: 0,),
+      home: RecommendPage(
+        selIndex: 0,
+      ),
     );
   }
 }
 
 class RecommendPage extends StatelessWidget {
-  const RecommendPage({Key key,@required this.selIndex}) : super(key: key);
+  const RecommendPage({Key key, @required this.selIndex}) : super(key: key);
   final int selIndex;
   @override
   Widget build(BuildContext context) {
+    double rpx = MediaQuery.of(context).size.width / 750;
     return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              builder: (context) => RecommendProvider(),
-            )
-          ],
-          child: Scaffold(
-            
-            resizeToAvoidBottomInset: false,
-            body: Container(
-              decoration: BoxDecoration(color: Colors.black),
-              child: Stack(children: [
-                CenterImage(),
-                Home(),
-              ]),
+        providers: [
+          ChangeNotifierProvider(
+            builder: (context) => RecommendProvider(),
+          )
+        ],
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Stack(children: [
+            MainTabView(),
+            Positioned(
+              top: 20 * rpx,
+              // height: 120,
+              width: 750 * rpx,
+              child: SafeArea(
+                  child: Container(
+                // decoration: BoxDecoration(color: Colors.pinkAccent),
+                child: TopTab(),
+              )),
             ),
-            bottomNavigationBar: BottomSafeBar(selIndex: selIndex,),
-          ));
+          ]),
+          bottomNavigationBar: BottomSafeBar(
+            selIndex: selIndex,
+          ),
+        ));
   }
 }
 
+class MainTabView extends StatelessWidget {
+  const MainTabView({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    return TabBarView(
+      
+      controller: provider.controller,
+      children: <Widget>[
+        SwiperMain(type: "followed",),
+        SwiperMain(type: "recommend",),
+      ],
+    );
+  }
+}
+
+class SwiperMain extends StatefulWidget {
+  SwiperMain({Key key,this.type}) : super(key: key);
+  final String type;
+  _SwiperMainState createState() => _SwiperMainState();
+}
+
+class _SwiperMainState extends State<SwiperMain> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    List<MainInfo> infos=List<MainInfo>();
+    if(widget.type=="followed"){
+      infos=provider.followed;
+    }
+    else{
+      infos=provider.infos;
+    }
+    return Swiper(
+      loop: false,
+      scrollDirection: Axis.vertical,
+      itemCount: infos.length,
+      itemBuilder: (context, index) {
+        MainInfo curData = infos[index];
+        return Container(
+          decoration: BoxDecoration(color: Colors.black),
+          child: Stack(children: [
+            CenterImage(
+              videoPath: curData.videoPath,
+            ),
+            Home(),
+          ]),
+        );
+      },
+    );
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+}
+
+// class SwiperMain extends StatelessWidget {
+//   const SwiperMain({Key key,@required this.type}) : super(key: key);
+//   final String type;
+//   @override
+//   Widget build(BuildContext context) {
+//     RecommendProvider provider = Provider.of<RecommendProvider>(context);
+//     List<MainInfo> infos=List<MainInfo>();
+//     if(type=="followed"){
+//       infos=provider.followed;
+//     }
+//     else{
+//       infos=provider.infos;
+//     }
+//     return Swiper(
+//       loop: false,
+//       scrollDirection: Axis.vertical,
+//       itemCount: infos.length,
+//       itemBuilder: (context, index) {
+//         MainInfo curData = infos[index];
+//         return Container(
+//           decoration: BoxDecoration(color: Colors.black),
+//           child: Stack(children: [
+//             CenterImage(
+//               videoPath: curData.videoPath,
+//             ),
+//             Home(),
+//           ]),
+//         );
+//       },
+//     );
+//   }
+// }
+
 class BottomSafeBar extends StatelessWidget {
-  const BottomSafeBar({Key key,@required this.selIndex}) : super(key: key);
+  const BottomSafeBar({Key key, @required this.selIndex}) : super(key: key);
   final int selIndex;
   @override
   Widget build(BuildContext context) {
@@ -100,7 +202,9 @@ class BottomSafeBar extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.black),
           height: 60,
           // decoration: BoxDecoration(color: Colors.black),
-          child: BtmBar(selectIndex: selIndex,),
+          child: BtmBar(
+            selectIndex: selIndex,
+          ),
         ),
       )),
     );
@@ -108,16 +212,16 @@ class BottomSafeBar extends StatelessWidget {
 }
 
 class CenterImage extends StatelessWidget {
-  const CenterImage({Key key}) : super(key: key);
-
+  const CenterImage({Key key, @required this.videoPath}) : super(key: key);
+  final String videoPath;
   @override
   Widget build(BuildContext context) {
-    double bottom = MediaQuery.of(context).viewInsets.bottom;
-    RecommendProvider provider = Provider.of<RecommendProvider>(context);
+    // double bottom = MediaQuery.of(context).viewInsets.bottom;
+    // RecommendProvider provider = Provider.of<RecommendProvider>(context);
     return Center(
       child: Container(
           // padding: EdgeInsets.only(top: bottom),
-          child: Image.asset(provider.mainInfo.videoPath)),
+          child: Image.asset(videoPath)),
     );
   }
 }
@@ -180,16 +284,6 @@ class Home extends StatelessWidget {
     double rpx = screenWidth / 750;
     return Stack(children: [
       Positioned(
-        top: 20*rpx,
-        // height: 120,
-        width: screenWidth,
-        child: SafeArea(
-            child: Container(
-          // decoration: BoxDecoration(color: Colors.pinkAccent),
-          child: TopTab(),
-        )),
-      ),
-      Positioned(
         bottom: 0,
         width: 0.70 * screenWidth,
         height: 260 * rpx,
@@ -229,17 +323,19 @@ class TopTab extends StatefulWidget {
 }
 
 class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
-  TabController _controller;
-
+  // TabController _controller;
+  // RecommendProvider provider;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _controller = TabController(vsync: this, length: 2, initialIndex: 1);
+    // _controller = TabController(vsync: this, length: 2, initialIndex: 1);
+    
   }
 
   @override
   Widget build(BuildContext context) {
+    RecommendProvider provider=Provider.of<RecommendProvider>(context);
     double rpx = MediaQuery.of(context).size.width / 750;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -264,10 +360,8 @@ class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
                   indicatorPadding: EdgeInsets.symmetric(horizontal: 30),
                   unselectedLabelStyle:
                       TextStyle(color: Colors.grey[700], fontSize: 18),
-                  controller: _controller,
+                  controller: provider.controller,
                   tabs: <Widget>[Text("关注"), Text("推荐")],
-                  
-                  
                 ))),
         Icon(
           Icons.live_tv,
@@ -281,8 +375,6 @@ class _TopTabState extends State<TopTab> with SingleTickerProviderStateMixin {
     );
   }
 }
-
-
 
 class BtnContent extends StatelessWidget {
   const BtnContent({Key key}) : super(key: key);
@@ -455,7 +547,7 @@ class _ButtonListState extends State<ButtonList> {
               child: Stack(
                 children: <Widget>[
                   Container(
-                    // decoration: BoxDecoration(c),
+                      // decoration: BoxDecoration(c),
                       width: 90 * rpx,
                       height: 90 * rpx,
                       child: CircleAvatar(
@@ -583,6 +675,6 @@ showBottom(context, provider) {
                 onTap: () {
                   FocusScope.of(context).requestFocus(FocusNode());
                 },
-                child: ReplyFullList(pCtx:context)));
+                child: ReplyFullList(pCtx: context)));
       });
 }

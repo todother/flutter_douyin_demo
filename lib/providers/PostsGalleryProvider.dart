@@ -4,10 +4,8 @@ import 'dart:convert';
 import 'package:douyin_demo/models/PostsModel.dart';
 import 'package:douyin_demo/widgets/WebRequest.dart';
 import 'package:flutter/material.dart';
-// import 'package:my_app/models/PostsModel.dart';
-// import 'package:my_app/tools/WebRequest.dart';
 import 'package:http/http.dart' as http;
-// import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 
 class PostsGalleryProvider with ChangeNotifier {
@@ -15,13 +13,15 @@ class PostsGalleryProvider with ChangeNotifier {
   List<PostsModel> model2 = List<PostsModel>();
   double _len1 = 0;
   double _len2 = 0;
-  // get  models1 => _model1;
-  // get models2 => _model2;
   List<PostsModel> posts = List<PostsModel>();
 
   PostsGalleryProvider() {
     getPosts(0, 0);
-    notifyListeners();
+    // notifyListeners();
+  }
+  
+  dispose(){
+    super.dispose();
   }
 
   Future getPosts(orderType, ifRefresh) async {

@@ -1,20 +1,26 @@
 PODS:
   - Flutter (1.0.0)
+  - shared_preferences (0.0.1):
+    - Flutter
   - video_player (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
 
 PODFILE CHECKSUM: 10ae9c18d12c9ffc2275c9a159a3b1e281990db0

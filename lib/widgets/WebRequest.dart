@@ -6,10 +6,8 @@ class WebRequest extends Object {
   //
   bool ifPrd;
   bool ifIos;
-
   Future<Uri> generate(String path, Map<String, dynamic> params) async {
     final prefs = await SharedPreferences.getInstance();
-
     String hosts;
     String scheme;
     int ports;
@@ -36,7 +34,7 @@ class WebRequest extends Object {
         ports = prefs.getInt('ports_real_d');
     }
     Uri url = Uri(
-        scheme: scheme,
+        scheme: scheme, //http https
         host: hosts,
         port: ports,
         path: path,

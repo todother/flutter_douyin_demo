@@ -160,6 +160,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_page_indicator:
+    dependency: transitive
+    description:
+      name: flutter_page_indicator
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.3"
+  flutter_swiper:
+    dependency: "direct main"
+    description:
+      name: flutter_swiper
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.6"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -429,6 +443,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.0.19"
+  stretchy_header:
+    dependency: "direct main"
+    description:
+      name: stretchy_header
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.5"
   string_scanner:
     dependency: transitive
     description:
@@ -457,6 +478,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.1+2"
+  transformer_page_view:
+    dependency: transitive
+    description:
+      name: transformer_page_view
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.6"
   typed_data:
     dependency: transitive
     description:

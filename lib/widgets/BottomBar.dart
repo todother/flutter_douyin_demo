@@ -1,5 +1,6 @@
 import 'package:douyin_demo/main.dart';
 import 'package:douyin_demo/pages/sameCity/SameCityPage.dart';
+import 'package:douyin_demo/pages/selfHome/HomePage.dart';
 import 'package:douyin_demo/providers/PostsGalleryProvider.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:flutter/material.dart';
@@ -44,12 +45,12 @@ class _BtmBarState extends State<BtmBar> {
     }
     selected[widget.selectIndex] = true;
   }
-  
+
   @override
   void dispose() {
-  // _controller.dispose();
-  super.dispose();
-}
+    // _controller.dispose();
+    super.dispose();
+  }
 
   tapItem(index) {
     // selected=List<bool>();
@@ -76,12 +77,22 @@ class _BtmBarState extends State<BtmBar> {
             context,
             MaterialPageRoute(
                 builder: (context) => MultiProvider(
-                  providers: [ChangeNotifierProvider(builder: (context)=>PostsGalleryProvider(),)],
-                  child: SameCityMain(
-                        selIndex: index,
-                      )
-                )),
+                        providers: [
+                          ChangeNotifierProvider(
+                            builder: (context) => PostsGalleryProvider(),
+                          )
+                        ],
+                        child: SameCityMain(
+                          selIndex: index,
+                        ))),
             ModalRoute.withName("/sameCity"));
+        break;
+      case 2:
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SelfHomePage()),
+            ModalRoute.withName("/selfHome"));
         break;
       default:
         break;

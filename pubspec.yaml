@@ -31,6 +31,8 @@ dependencies:
   sticky_headers:
   shared_preferences:
   json_annotation:
+  flutter_swiper:
+  stretchy_header:
     
 dev_dependencies:
   flutter_test:
@@ -53,6 +55,13 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
    - lib/images/pingguo.jpeg
+   - lib/images/sky.jpg
+   - lib/images/temple.jpg
+   - lib/images/zhifei.jpg
+   - lib/images/woman.jpg
+   - lib/images/woman2.jpg
+   - lib/images/whitehouse.jpg
+   - lib/images/waterdrop.jpg
   #  - lib/images/aaa.png
   #  - images/a_dot_ham.jpeg
 

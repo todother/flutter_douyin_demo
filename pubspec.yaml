@@ -33,6 +33,7 @@ dependencies:
   json_annotation:
   flutter_swiper:
   stretchy_header:
+  after_layout:
     
 dev_dependencies:
   flutter_test:

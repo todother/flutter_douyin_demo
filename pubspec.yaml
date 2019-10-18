@@ -34,6 +34,9 @@ dependencies:
   flutter_swiper:
   stretchy_header:
   after_layout:
+  camera:
+  path_provider:
+  path:
     
 dev_dependencies:
   flutter_test:

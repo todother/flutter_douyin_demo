@@ -1,4 +1,5 @@
 import 'package:douyin_demo/main.dart';
+import 'package:douyin_demo/pages/CameraPage/CameraMain.dart';
 import 'package:douyin_demo/pages/sameCity/SameCityPage.dart';
 import 'package:douyin_demo/pages/selfHome/HomePage.dart';
 import 'package:douyin_demo/providers/PostsGalleryProvider.dart';
@@ -94,6 +95,15 @@ class _BtmBarState extends State<BtmBar> {
                 builder: (context) => SelfHomePage()),
             ModalRoute.withName("/selfHome"));
         break;
+      case 3:
+        Navigator.of(context).push(new MaterialPageRoute(
+      builder: (BuildContext context) {
+        return  CameraPage()
+        ;
+      },
+    fullscreenDialog: true
+  ));
+        break;
       default:
         break;
     }
@@ -117,7 +127,7 @@ class _BtmBarState extends State<BtmBar> {
               child: getBtmTextWidget("同城", selected[1], () {
                 tapItem(1);
               }, rpx)),
-          Expanded(flex: 1, child: AddIcon()),
+          Expanded(flex: 1, child: AddIcon(tapItem:(){ tapItem(3); },)),
           Expanded(
               flex: 1,
               child: getBtmTextWidget("消息", selected[2], () {
@@ -152,8 +162,8 @@ getBtmTextWidget(String content, bool ifSelected, tapFunc, double rpx) {
 }
 
 class AddIcon extends StatelessWidget {
-  const AddIcon({Key key}) : super(key: key);
-
+  const AddIcon({Key key,@required this.tapItem}) : super(key: key);
+  final VoidCallback tapItem;
   @override
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
@@ -165,37 +175,41 @@ class AddIcon extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 30 * rpx),
       height: iconHeight,
       width: 150 * rpx,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            height: iconHeight,
-            width: totalWidth - eachSide,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.cyan, borderRadius: BorderRadius.circular(10)),
+      child: FlatButton(
+        padding: EdgeInsets.all(0),
+        onPressed: (){tapItem();},
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              height: iconHeight,
+              width: totalWidth - eachSide,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.cyan, borderRadius: BorderRadius.circular(10)),
+              ),
             ),
-          ),
-          Positioned(
-            height: iconHeight,
-            width: totalWidth - eachSide,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.redAccent,
-                  borderRadius: BorderRadius.circular(10)),
+            Positioned(
+              height: iconHeight,
+              width: totalWidth - eachSide,
+              right: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(10)),
+              ),
             ),
-          ),
-          Positioned(
-            height: iconHeight,
-            width: totalWidth - eachSide * 2,
-            right: eachSide,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              child: Icon(Icons.add),
+            Positioned(
+              height: iconHeight,
+              width: totalWidth - eachSide * 2,
+              right: eachSide,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                child: Icon(Icons.add),
+              ),
             ),
-          ),
-        ],
+          ],
+        )
       ),
     );
   }

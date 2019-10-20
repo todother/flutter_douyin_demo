@@ -37,6 +37,7 @@ dependencies:
   camera:
   path_provider:
   path:
+  uuid:
     
 dev_dependencies:
   flutter_test:

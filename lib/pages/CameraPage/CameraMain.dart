@@ -1,6 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:camera/new/src/support_android/camera.dart';
+import 'package:douyin_demo/providers/CameraProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:path/path.dart' as p;
 
 class CameraPage extends StatelessWidget {
   const CameraPage({Key key}) : super(key: key);
@@ -9,61 +12,94 @@ class CameraPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: CameraMain(),
+      body: MultiProvider(providers: [
+        ChangeNotifierProvider(
+          builder: (_) => CameraProvider(),
+        )
+      ], child: CameraMain()),
       bottomNavigationBar: BottomAppBar(),
     );
   }
 }
 
-class CameraMain extends StatefulWidget {
-  CameraMain({Key key}) : super(key: key);
+// class CameraMain extends StatefulWidget {
+//   CameraMain({Key key}) : super(key: key);
 
-  _CameraMainState createState() => _CameraMainState();
-}
+//   _CameraMainState createState() => _CameraMainState();
+// }
 
-class _CameraMainState extends State<CameraMain> {
-  var cameras;
-  CameraController _controller;
-  @override
-  initState() {
-    // TODO: implement initState
-    super.initState();
-    initCamera();
-  }
+// class _CameraMainState extends State<CameraMain> {
+//   var cameras;
+//   CameraController _controller;
+//   @override
+//   initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     initCamera();
+//   }
 
-  Future initCamera() async {
-    cameras = await availableCameras();
-    _controller = CameraController(cameras[0], ResolutionPreset.medium);
-    _controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    });
-  }
+//   Future initCamera() async {
+//     cameras = await availableCameras();
+//     _controller = CameraController(cameras[0], ResolutionPreset.medium);
+//     _controller.initialize().then((_) {
+//       if (!mounted) {
+//         return;
+//       }
+//       setState(() {});
+//     });
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _controller?.dispose();
-    super.dispose();
-  }
+//   }
+
+//   @override
+//   void dispose() {
+//     // TODO: implement dispose
+//     _controller?.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+
+//   }
+// }
+
+class CameraMain extends StatelessWidget {
+  const CameraMain({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    CameraProvider provider = Provider.of<CameraProvider>(context);
+    if (provider == null || provider.cameraController == null) {
+      return Container(
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
     double rpx = MediaQuery.of(context).size.width / 750;
     double toTop = 100 * rpx;
     double outBox = 170 * rpx;
     double innerBox = 130 * rpx;
+    CameraController _controller = provider.cameraController;
+    var cameras = provider.cameras;
     if (_controller == null || _controller?.value == null) {
       return Container(
         child: Center(child: CircularProgressIndicator()),
       );
     }
+    final size = MediaQuery.of(context).size;
+    final deviceRatio = size.width / size.height;
     return _controller.value.isInitialized
         ? Stack(children: <Widget>[
             // Camera.open(cameraId),
-            CameraPreview(_controller),
+
+            Transform.scale(
+              scale: _controller.value.aspectRatio / deviceRatio,
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
+                  child: CameraPreview(_controller),
+                ),
+              ),
+            ),
             Positioned(
               //顶部关闭按钮
               top: toTop,
@@ -136,23 +172,16 @@ class _CameraMainState extends State<CameraMain> {
               right: 30 * rpx,
               top: 80 * rpx,
               child: IconButton(
-                icon: Icon(Icons.camera_front),
-                onPressed: () {
-                  _controller =
-                      CameraController(cameras[1], ResolutionPreset.medium);
-                  _controller.initialize().then((_) {
-                    if (!mounted) {
-                      return;
-                    }
-                    setState(() {});
-                  });
-                },
-              ),
+                  icon: Icon(Icons.camera_front),
+                  onPressed: () {
+                    provider.changeCamera();
+                  }),
             )
           ])
         : Container();
   }
 }
+
 
 class CircleTakePhoto extends StatelessWidget {
   const CircleTakePhoto(
@@ -163,6 +192,8 @@ class CircleTakePhoto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
+    CameraProvider provider = Provider.of<CameraProvider>(context);
+    
     // double outBox=160*rpx;
     // double innerBox=130*rpx;
     return Container(
@@ -175,13 +206,21 @@ class CircleTakePhoto extends StatelessWidget {
         border: Border.all(
             width: 10 * rpx, color: Color.fromARGB(128, 219, 48, 85)),
       ),
-      child: Container(
-        width: innerBox,
-        height: innerBox,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: Color.fromARGB(255, 219, 48, 85),
-            borderRadius: BorderRadius.circular(75 * rpx)),
+      child: FlatButton(
+        padding: EdgeInsets.all(0),
+        onPressed: () async {
+          provider.changeFileName();
+          print(provider.fileName);
+          await provider.cameraController.takePicture(provider.fileName);
+        },
+        child: Container(
+          width: innerBox,
+          height: innerBox,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Color.fromARGB(255, 219, 48, 85),
+              borderRadius: BorderRadius.circular(75 * rpx)),
+        )
       ),
     );
   }

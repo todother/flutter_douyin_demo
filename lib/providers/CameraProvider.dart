@@ -26,6 +26,9 @@ class CameraProvider with ChangeNotifier {
 
   getCameras() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
+    if(!Directory(appDocDir.path).existsSync()){
+      appDocDir.createSync();
+    }
     appFolder = appDocDir.path;
     cameras = await availableCameras();
     cameraController =

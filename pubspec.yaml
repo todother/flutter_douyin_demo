@@ -38,6 +38,7 @@ dependencies:
   path_provider:
   path:
   uuid:
+  image_picker_saver:
     
 dev_dependencies:
   flutter_test:

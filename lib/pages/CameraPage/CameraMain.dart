@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:camera/new/src/support_android/camera.dart';
 import 'package:douyin_demo/providers/CameraProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:image_picker_saver/image_picker_saver.dart';
+
 
 class CameraPage extends StatelessWidget {
   const CameraPage({Key key}) : super(key: key);
@@ -86,19 +90,20 @@ class CameraMain extends StatelessWidget {
       );
     }
     final size = MediaQuery.of(context).size;
-    final deviceRatio = size.width / size.height;
     return _controller.value.isInitialized
         ? Stack(children: <Widget>[
             // Camera.open(cameraId),
 
-            Transform.scale(
-              scale: _controller.value.aspectRatio / deviceRatio,
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: CameraPreview(_controller),
+            ClipRect(
+              child: Transform.scale(
+                scale: _controller.value.aspectRatio / size.aspectRatio,
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: CameraPreview(_controller),
+                  ),
                 ),
-              ),
+              )
             ),
             Positioned(
               //顶部关闭按钮
@@ -211,7 +216,12 @@ class CircleTakePhoto extends StatelessWidget {
         onPressed: () async {
           provider.changeFileName();
           print(provider.fileName);
-          await provider.cameraController.takePicture(provider.fileName);
+          await provider.cameraController.takePicture(provider.fileName).then((_){
+            // Navigator.push(context, MaterialPageRoute(fullscreenDialog: true,builder: (_){
+            //   return Image.file(File(provider.fileName) );
+            // }));
+            ImagePickerSaver.saveFile(fileData: File(provider.fileName).readAsBytesSync());
+          });
         },
         child: Container(
           width: innerBox,

@@ -45,6 +45,8 @@
 		<string>系统将使用您的相机进行图片拍摄，视频拍摄等</string>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>系统将使用您的麦克风进行音频录制</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>我们将存储照片至您的相册以及从相册获取图片信息</string>
 		<key>NSAppTransportSecurity</key>
 		<dict>
 			<key>NSAllowsArbitraryLoads</key>

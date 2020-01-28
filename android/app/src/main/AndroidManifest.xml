@@ -30,5 +30,8 @@
             </intent-filter>
         </activity>
         <!-- <uses-permission android:name="android.permission.INTERNET"/> -->
+        <meta-data
+        android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+        android:value="ocr,face" />
     </application>
 </manifest>

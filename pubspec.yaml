@@ -29,7 +29,7 @@ dependencies:
   provider: 
   lpinyin:
   sticky_headers:
-  shared_preferences:
+  shared_preferences: ^0.5.3
   json_annotation:
   flutter_swiper:
   stretchy_header:
@@ -40,6 +40,8 @@ dependencies:
   uuid:
   image_picker_saver:
   image_gallery_saver:
+  firebase_ml_vision:
+  image_picker:
     
 dev_dependencies:
   flutter_test:

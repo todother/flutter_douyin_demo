@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "416855912244",
+    "firebase_url": "https://douyindemo.firebaseio.com",
+    "project_id": "douyindemo",
+    "storage_bucket": "douyindemo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416855912244:android:e38e3a5b3b0c678b2dff61",
+        "android_client_info": {
+          "package_name": "com.example.douyin_demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "416855912244-5avobokp2nrhk8bgrt0sodtjggorhr9k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtYf-GF_H8wDLD116rsudevTOkgzOaNEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "416855912244-5avobokp2nrhk8bgrt0sodtjggorhr9k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "416855912244-nqmupjevgtbf7ifcjfv42uocjdv5c77f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.douyinDemo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

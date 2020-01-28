@@ -1,5 +1,7 @@
 import 'package:douyin_demo/main.dart';
 import 'package:douyin_demo/pages/CameraPage/CameraMain.dart';
+import 'package:douyin_demo/pages/FaceDetect/FaceDetection.dart';
+import 'package:douyin_demo/pages/loadData/loadData.dart';
 import 'package:douyin_demo/pages/sameCity/SameCityPage.dart';
 import 'package:douyin_demo/pages/selfHome/HomePage.dart';
 import 'package:douyin_demo/providers/PostsGalleryProvider.dart';
@@ -64,15 +66,15 @@ class _BtmBarState extends State<BtmBar> {
     //   selected=selected;
     // });
     switch (index) {
-      case 0:
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RecommendPage(
-                      selIndex: index,
-                    )),
-            ModalRoute.withName("/Home"));
-        break;
+      // case 0:
+      //   Navigator.pushAndRemoveUntil(
+      //       context,
+      //       MaterialPageRoute(
+      //           builder: (context) => MyHomePage(
+      //                 selIndex: index,
+      //               )),
+      //       ModalRoute.withName("/Home"));
+      //   break;
       case 1:
         Navigator.pushAndRemoveUntil(
             context,
@@ -98,7 +100,7 @@ class _BtmBarState extends State<BtmBar> {
       case 3:
         Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) {
-        return  CameraPage()
+        return  LoadDataDemo()
         ;
       },
     fullscreenDialog: true

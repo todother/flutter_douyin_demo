@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
@@ -12,14 +13,15 @@ class CameraProvider extends State<StatefulWidget>
   CameraController cameraController;
   TabController tabController;
   List<CameraDescription> cameras;
-  int curCamera = 0;
+  int curCamera = 1;
   String appFolder = "";
   String fileName;
   Widget photoButton;
-  bool ifMakeVideo=false;
+  bool ifMakeVideo = false;
+  FaceDetector faceDetector;
 
   CameraProvider() {
-    tabController=TabController(length: 6,vsync: this);
+    tabController = TabController(length: 6, vsync: this);
     getCameras();
   }
 
@@ -29,6 +31,24 @@ class CameraProvider extends State<StatefulWidget>
     notifyListeners();
   }
 
+  captureFrame() {
+   
+    cameraController.startImageStream((CameraImage image)  {
+      cameraController.stopImageStream();
+      detectImage(image);
+      captureFrame();
+    });
+  }
+
+  detectImage(image) async {
+    final List<Face> faces = await faceDetector.processImage(
+          FirebaseVisionImage.fromBytes(image.planes[0].bytes, null));
+          print(faces);
+      if (faces.length > 0) {
+        print(faces[0].headEulerAngleY);
+      }
+  }
+
   getCameras() async {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     if (!Directory(appDocDir.path).existsSync()) {
@@ -36,12 +56,20 @@ class CameraProvider extends State<StatefulWidget>
     }
     appFolder = appDocDir.path;
     cameras = await availableCameras();
-    cameraController =
-        CameraController(cameras[curCamera], ResolutionPreset.high);
-    cameraController.initialize().then((_) {
-      cameraController.prepareForVideoRecording();
-      notifyListeners();
-    });
+    // cameraController =
+    //     CameraController(cameras[curCamera], ResolutionPreset.low);
+    // cameraController.initialize().then((_) {
+      
+    //   cameraController.prepareForVideoRecording();
+    //   faceDetector = FirebaseVision.instance.faceDetector();
+    //   // captureFrame();
+    //   notifyListeners();
+    // });
+  }
+
+  dispose() {
+    cameraController.dispose();
+    super.dispose();
   }
 
   changeCamera() {
@@ -57,8 +85,8 @@ class CameraProvider extends State<StatefulWidget>
     });
   }
 
-  changePhotoWidget(){
-    ifMakeVideo=!ifMakeVideo;
+  changePhotoWidget() {
+    ifMakeVideo = !ifMakeVideo;
     notifyListeners();
   }
 
@@ -67,6 +95,4 @@ class CameraProvider extends State<StatefulWidget>
     // TODO: implement build
     return null;
   }
-
-
 }

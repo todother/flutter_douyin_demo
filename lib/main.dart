@@ -68,6 +68,9 @@ class RecommendPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
+    // MediaQuery.of(context).padding.top
+    // MediaQuery.of(context).padding.bottom
+
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(

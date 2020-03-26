@@ -18,15 +18,9 @@ class CameraPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              builder: (_) => CameraProvider(),
-            )
-          ],
-          child: CameraMain(
+      body: CameraMain(
             rpx: MediaQuery.of(context).size.width / 750,
-          )),
+          ),
       bottomNavigationBar: BottomAppBar(),
     );
   }
@@ -53,7 +47,7 @@ class _CameraMainState extends State<CameraMain> {
     super.initState();
 
     // provider = Provider.of<CameraProvider>(context);
-    getCameras();
+    // getCameras();
     rpx = widget.rpx;
     toTop = 100 * rpx;
     outBox = 170 * rpx;
@@ -141,6 +135,7 @@ class _CameraMainState extends State<CameraMain> {
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<CameraProvider>(context);
+    _controller=provider.cameraController;
     if (provider == null || _controller == null) {
       return Container(
         child: Center(child: CircularProgressIndicator()),

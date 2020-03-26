@@ -4,6 +4,7 @@ import 'package:douyin_demo/pages/FaceDetect/FaceDetection.dart';
 import 'package:douyin_demo/pages/loadData/loadData.dart';
 import 'package:douyin_demo/pages/sameCity/SameCityPage.dart';
 import 'package:douyin_demo/pages/selfHome/HomePage.dart';
+import 'package:douyin_demo/providers/CameraProvider.dart';
 import 'package:douyin_demo/providers/PostsGalleryProvider.dart';
 import 'package:douyin_demo/providers/RecommendProvider.dart';
 import 'package:flutter/material.dart';
@@ -100,8 +101,16 @@ class _BtmBarState extends State<BtmBar> {
       case 3:
         Navigator.of(context).push(new MaterialPageRoute(
       builder: (BuildContext context) {
-        return  LoadDataDemo()
-        ;
+        return  MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              builder: (_) => CameraProvider(),
+            )
+          ],
+          child: CameraPage(
+            // rpx: MediaQuery.of(context).size.width / 750,
+          )
+        );
       },
     fullscreenDialog: true
   ));

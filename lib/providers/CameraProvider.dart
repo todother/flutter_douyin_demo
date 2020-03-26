@@ -56,8 +56,18 @@ class CameraProvider extends State<StatefulWidget>
     }
     appFolder = appDocDir.path;
     cameras = await availableCameras();
-    // cameraController =
-    //     CameraController(cameras[curCamera], ResolutionPreset.low);
+    cameraController =
+        CameraController(cameras[curCamera], ResolutionPreset.high);
+        
+    try {
+      await cameraController.initialize();
+    } catch (e) {
+      print(e);
+    }
+    
+        // cameraController.startImageStream(onAvailable);
+        
+        notifyListeners();
     // cameraController.initialize().then((_) {
       
     //   cameraController.prepareForVideoRecording();

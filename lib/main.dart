@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "某音",
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(primaryColor: Color(0xff121319)),
       home: RecommendPage(
         selIndex: 0,
